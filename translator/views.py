@@ -15,20 +15,25 @@ import numpy as np
 
 def home(request):
     return render(request, 'Predict.html')
-"""
+
 # Loading the translator model
-lang_model = tf.keras.models.load_model('eng-fre-weights.h5')
+def load_model():
+   lang_model = tf.keras.models.load_model('eng-fre-weights.h5')
+   return lang_model
 
 # Loading the Tokenizer
-x_tokenizer = joblib.load('eng.pickle')
-y_tokenizer = joblib.load('frn.pickle')
+def load_tokenizer():
+    x_tokenizer = joblib.load('eng.pickle')
+    y_tokenizer = joblib.load('frn.pickle')
+    return x_tokenizer, y_tokenizer
 
 def remove_punc(x):
   x = re.sub('[!#?,.:";]', '', x)
   return x
 
 # function to make prediction
-def prediction(x, x_tokenizer = x_tokenizer, y_tokenizer = y_tokenizer):
+def prediction(x, x_tokenizer, y_tokenizer):
+    lang_model = load_model()
     predictions = lang_model.predict(x)[0]
     id_to_word = {id: word for word, id in y_tokenizer.word_index.items()}
     id_to_word[0] = ''
@@ -45,5 +50,6 @@ def predict(request):
         text = request.POST['text']
 
         text = remove_punc(text)
-        pad_to_text(text, x_tokenizer)
-"""
+        x_tokenizer, y_tokenizer = load_tokenizer()
+
+        text = pad_to_text(text, x_tokenizer)
