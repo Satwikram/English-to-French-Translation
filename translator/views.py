@@ -40,6 +40,14 @@ def prediction(x, x_tokenizer, y_tokenizer):
     return ' '.join([id_to_word[j] for j in np.argmax(predictions,1)])
 
 
+def tokenize_and_pad(x, maxlen):
+
+  tokenizer = Tokenizer(char_level = False)
+  tokenizer.fit_on_texts(x)
+  sequences = tokenizer.texts_to_sequences(x)
+  padded = pad_sequences(sequences, maxlen = maxlen, padding = 'post')
+  return tokenizer, sequences, padded
+
 def pad_to_text(padded, tokenizer):
     id_to_word = {id: word for word, id in tokenizer.word_index.items()}
     id_to_word[0] = ''
